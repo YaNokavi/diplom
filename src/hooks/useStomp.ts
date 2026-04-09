@@ -82,7 +82,7 @@ import {
   addLog,
 } from "../store/slices/realtimeSlice";
 
-const WEBSOCKET_URL = "wss://diplomabffservice-anderm.amvera.io/ws"; // Обратите внимание: wss:// вместо https://
+const WEBSOCKET_URL = "https://diplomabffservice-anderm.amvera.io/ws"; // Обратите внимание: wss:// вместо https://
 
 export const useStomp = (sourceIp: string) => {
   const dispatch = useDispatch();

@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://YaNokavi.github.io/diplom/",
+  "homepage": "https://yanokavi.github.io/diplom/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

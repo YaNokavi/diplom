@@ -22,4 +22,7 @@ export const router = createBrowserRouter(
       <Route path="manuals" element={<ManualsPage />} />
     </Route>,
   ),
+  {
+    basename: "/diplom",
+  },
 );
