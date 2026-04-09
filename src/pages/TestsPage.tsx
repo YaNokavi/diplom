@@ -55,6 +55,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setSourceIp, receiveTelemetry } from "../store/slices/realtimeSlice";
 import type { RootState } from "../store/store";
 import TelemetryChart from "../components/testsPage/TelemetryChart";
+import TestWizard from "../components/testsPage/TestWizard";
 
 export default function TestsPage() {
   const [ipInput, setIpInput] = useState<string>("127.0.0.1");
@@ -149,17 +150,17 @@ export default function TestsPage() {
               Подключиться
             </button>
           </form>
-
+          {/* 
           <div style={{ fontSize: 48, fontWeight: "bold", color: "#2180a0" }}>
             {currentValue !== null ? currentValue : "--"}{" "}
             <span style={{ fontSize: 24, color: "#626c71" }}>V</span>
-          </div>
+          </div> */}
 
-          <TelemetryChart />
+          {/* <TelemetryChart /> */}
         </div>
 
         {/* Правая колонка: Журнал событий */}
-        <div
+        {/* <div
           style={{
             background: "#fff",
             border: "1px solid #e8e8e8",
@@ -197,6 +198,9 @@ export default function TestsPage() {
               </div>
             )}
           </div>
+        </div> */}
+        <div style={{ marginTop: 40 }}>
+          <TestWizard />
         </div>
       </div>
     </div>
