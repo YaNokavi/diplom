@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://YaNokavi.github.io/diplom",
+  "homepage": "https://YaNokavi.github.io/diplom/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -20,6 +20,7 @@
     "react-dom": "^19.2.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.13.0",
+    "recharts": "^3.8.1",
     "redux": "^5.0.1",
     "sass": "^1.97.3"
   },
