@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { type RootState } from "../../../store"; // Укажите правильный путь к store
+
 import {
   LineChart,
   Line,
@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import type { RootState } from "../../store/store";
 
 export default function TelemetryChart() {
   // Достаем историю измерений из Redux
