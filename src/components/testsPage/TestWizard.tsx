@@ -339,9 +339,12 @@ function Step4() {
   } = useSelector((s: RootState) => s.testing);
   const { isConnected, latest } = useSelector((s: RootState) => s.telemetry);
   const sourceIp = useSelector((s: RootState) => s.telemetry.sourceIp) ?? "";
+
+  // WS подключается только после нажатия "Запустить"
+  const [wsIp, setWsIp] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useStomp(sourceIp);
+  useStomp(wsIp);
 
   const handleCreateAndStart = async () => {
     if (!registeredDeviceId || !selectedStandId || !selectedProgramId) return;
@@ -358,6 +361,8 @@ function Step4() {
       dispatch(sessionCreated(sessionId));
       const session = await startTestSession(sessionId);
       dispatch(sessionUpdated(session));
+      // Подключаем WS только после успешного старта сессии
+      setWsIp(sourceIp);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Ошибка пуска испытания";
       dispatch(setError(msg));
