@@ -12,6 +12,15 @@ import type { PlcDataMessage } from "../types/api";
 const WEBSOCKET_URL =
   import.meta.env.VITE_WS_URL ?? "ws://localhost/ws";
 
+// Реальная структура сообщения с БФФ:
+// { sourceIp, testType, timestamp, data: { phase, dutOutputVoltage, dutErrorFlag, dutHeartbeat } }
+interface WsMessage {
+  sourceIp: string;
+  testType: string;
+  timestamp: string;
+  data: PlcDataMessage;
+}
+
 export const useStomp = (sourceIp: string) => {
   const dispatch = useDispatch();
   const clientRef = useRef<Client | null>(null);
@@ -33,23 +42,16 @@ export const useStomp = (sourceIp: string) => {
           "/user/queue/realtime",
           (message: IMessage) => {
             try {
-              const parsed: PlcDataMessage = JSON.parse(message.body);
-              dispatch(receiveTelemetry(parsed));
-            } catch {
-              // fallback: если бэк пошлёт простое число (legacy)
-              const num = Number(message.body);
-              if (!isNaN(num)) {
-                dispatch(
-                  receiveTelemetry({
-                    dutOutputVoltage: num,
-                    phase: null,
-                    dutErrorFlag: null,
-                    dutHeartbeat: null,
-                  })
-                );
+              const parsed: WsMessage = JSON.parse(message.body);
+              // данные телеметрии находятся в поле data
+              if (parsed.data) {
+                dispatch(receiveTelemetry(parsed.data));
               } else {
-                dispatch(addLog(`Неизвестный формат сообщения: ${message.body}`));
+                // fallback: если бэк вдруг пошлёт плоский объект
+                dispatch(receiveTelemetry(parsed as unknown as PlcDataMessage));
               }
+            } catch {
+              dispatch(addLog(`Ошибка парсинга сообщения: ${message.body}`));
             }
           },
           { sourceIp }
