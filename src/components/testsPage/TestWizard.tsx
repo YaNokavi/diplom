@@ -5,7 +5,6 @@ import TelemetryChart from "./TelemetryChart";
 import type { RootState } from "../../store/store";
 import { generateDocxReport } from "../../utils/reportGenerator";
 
-// Моковые данные шаблонов из вашего index.html
 const TEMPLATES: Record<string, any> = {
   sensor: {
     title: "Датчик давления",
@@ -46,9 +45,8 @@ export default function TestWizard() {
     serial: "",
   });
 
-  // Достаем данные из Redux для шагов 3 и 4
   const { isConnected, currentValue, history } = useSelector(
-    (state: RootState) => state.realtime,
+    (state: RootState) => state.telemetry,
   );
 
   const handleNext = () => setStep((p) => Math.min(p + 1, 5));
@@ -56,7 +54,7 @@ export default function TestWizard() {
 
   const isNextDisabled = () => {
     if (step === 1 && (!formData.template || !formData.device)) return true;
-    if (step === 3 && !isConnected) return true; // Ждем подключения к стенду
+    if (step === 3 && !isConnected) return true;
     return false;
   };
 
@@ -68,10 +66,10 @@ export default function TestWizard() {
         templateTitle:
           TEMPLATES[formData.template]?.title || "Неизвестный шаблон",
         gost: TEMPLATES[formData.template]?.gost || "Без ГОСТа",
-        history: history, // из useSelector(state => state.realtime.history)
-        status: "ГОДЕН", // В будущем можно вычислять динамически
+        history: history,
+        status: "СООТВЕТСТВУЕТ НОРМАМ",
       });
-      alert("Отчет успешно сгенерирован!");
+      alert("Протокол испытаний успешно сформирован");
     } catch (error) {
       console.error("Ошибка при создании отчета:", error);
       alert("Не удалось сгенерировать отчет");
@@ -89,7 +87,6 @@ export default function TestWizard() {
         border: "1px solid #e8e8e8",
       }}
     >
-      {/* Прогресс-бар */}
       <div
         style={{
           display: "flex",
@@ -133,13 +130,12 @@ export default function TestWizard() {
         ))}
       </div>
 
-      {/* Шаг 1: Выбор устройства */}
       {step === 1 && (
         <div>
           <h3>1. Выбор устройства и программы</h3>
           <div style={{ marginBottom: 16 }}>
             <label style={{ display: "block", marginBottom: 8, fontSize: 14 }}>
-              Программа испытаний (ГОСТ)
+              Программа испытаний
             </label>
             <select
               value={formData.template}
@@ -162,7 +158,7 @@ export default function TestWizard() {
 
           <div style={{ marginBottom: 16 }}>
             <label style={{ display: "block", marginBottom: 8, fontSize: 14 }}>
-              Серийный номер устройства
+              Серийный номер
             </label>
             <input
               type="text"
@@ -205,7 +201,6 @@ export default function TestWizard() {
         </div>
       )}
 
-      {/* Шаг 2: Инструкции */}
       {step === 2 && formData.template && (
         <div>
           <h3>2. Инструкция по проведению</h3>
@@ -234,7 +229,6 @@ export default function TestWizard() {
         </div>
       )}
 
-      {/* Шаг 3: Подключение к стенду */}
       {step === 3 && (
         <div style={{ textAlign: "center", padding: "40px 0" }}>
           <h3>3. Подключение к стенду</h3>
@@ -257,14 +251,11 @@ export default function TestWizard() {
             {isConnected ? "✓" : "⚡"}
           </div>
           <h4>
-            {isConnected
-              ? "Соединение установлено"
-              : "Ожидание подключения (введите IP на панели)..."}
+            {isConnected ? "Соединение установлено" : "Ожидание подключения..."}
           </h4>
         </div>
       )}
 
-      {/* Шаг 4: Сбор данных */}
       {step === 4 && (
         <div>
           <h3>4. Сбор телеметрии</h3>
@@ -301,7 +292,6 @@ export default function TestWizard() {
         </div>
       )}
 
-      {/* Шаг 5: Итоги */}
       {step === 5 && (
         <div style={{ textAlign: "center", padding: "40px 0" }}>
           <div style={{ fontSize: 64, color: "#22c25d", marginBottom: 16 }}>
@@ -324,12 +314,11 @@ export default function TestWizard() {
               fontWeight: "bold",
             }}
           >
-            Сгенерировать отчет (DOCX)
+            Сгенерировать протокол
           </button>
         </div>
       )}
 
-      {/* Навигация */}
       <div
         style={{
           display: "flex",

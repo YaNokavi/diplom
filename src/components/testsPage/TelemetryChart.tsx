@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-
+import type { RootState } from "../../store/store";
 import {
   LineChart,
   Line,
@@ -9,16 +9,14 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import type { RootState } from "../../store/store";
 
 export default function TelemetryChart() {
-  // Достаем историю измерений из Redux
-  const history = useSelector((state: RootState) => state.realtime.history);
+  const history = useSelector((state: RootState) => state.telemetry.history);
 
   if (history.length === 0) {
     return (
       <div style={{ marginTop: 20, color: "#626c71" }}>
-        Нет данных для отображения графика...
+        Ожидание поступления данных...
       </div>
     );
   }
@@ -67,7 +65,7 @@ export default function TelemetryChart() {
             stroke="#2180a0"
             strokeWidth={2}
             dot={false}
-            isAnimationActive={false} // Отключаем анимацию для потоковых данных
+            isAnimationActive={false}
           />
         </LineChart>
       </ResponsiveContainer>

@@ -21,7 +21,6 @@ interface ReportData {
 }
 
 export const generateDocxReport = async (data: ReportData) => {
-  // Вычисляем среднее значение для отчета
   const avgValue =
     data.history.length > 0
       ? (
@@ -69,22 +68,19 @@ export const generateDocxReport = async (data: ReportData) => {
             heading: HeadingLevel.HEADING_2,
             spacing: { after: 200 },
           }),
-          // Создаем таблицу с результатами
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
             rows: [
               new TableRow({
                 children: [
                   new TableCell({
-                    children: [new Paragraph({ text: "Параметр", bold: true })],
+                    children: [new Paragraph({ text: "Параметр" })],
                   }),
                   new TableCell({
-                    children: [
-                      new Paragraph({ text: "Среднее значение", bold: true }),
-                    ],
+                    children: [new Paragraph({ text: "Среднее значение" })],
                   }),
                   new TableCell({
-                    children: [new Paragraph({ text: "Статус", bold: true })],
+                    children: [new Paragraph({ text: "Статус" })],
                   }),
                 ],
               }),
@@ -99,21 +95,11 @@ export const generateDocxReport = async (data: ReportData) => {
               }),
             ],
           }),
-          new Paragraph({
-            children: [
-              new TextRun({ text: "\nЗАКЛЮЧЕНИЕ: ", bold: true }),
-              new TextRun({
-                text: "Устройство соответствует заявленным нормам.",
-              }),
-            ],
-            spacing: { before: 400 },
-          }),
         ],
       },
     ],
   });
 
-  // Генерируем blob и сохраняем файл
   const blob = await Packer.toBlob(doc);
   saveAs(blob, `Report_${data.device}_${data.serial}.docx`);
 };

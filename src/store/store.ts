@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import realtimeReducer from "./slices/realtimeSlice";
+import telemetryReducer from "./slices/telemetrySlice";
 
 export const store = configureStore({
   reducer: {
-    realtime: realtimeReducer,
+    telemetry: telemetryReducer,
   },
 });
 

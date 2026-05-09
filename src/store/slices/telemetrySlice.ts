@@ -1,14 +1,14 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-interface RealtimeState {
+interface TelemetryState {
   isConnected: boolean;
   sourceIp: string | null;
   currentValue: number | null;
-  history: { time: string; value: number }[]; // Массив для отрисовки графиков Recharts
-  logs: string[]; // Журнал событий
+  history: { time: string; value: number }[];
+  logs: string[];
 }
 
-const initialState: RealtimeState = {
+const initialState: TelemetryState = {
   isConnected: false,
   sourceIp: null,
   currentValue: null,
@@ -16,15 +16,15 @@ const initialState: RealtimeState = {
   logs: [],
 };
 
-export const realtimeSlice = createSlice({
-  name: "realtime",
+export const telemetrySlice = createSlice({
+  name: "telemetry",
   initialState,
   reducers: {
     setConnectionStatus: (state, action: PayloadAction<boolean>) => {
       state.isConnected = action.payload;
       const statusLog = action.payload
-        ? "✅ Установлено STOMP соединение"
-        : "❌ Соединение разорвано";
+        ? "Установлено STOMP соединение"
+        : "Соединение разорвано";
       state.logs.push(`[${new Date().toLocaleTimeString()}] ${statusLog}`);
     },
     setSourceIp: (state, action: PayloadAction<string>) => {
@@ -33,7 +33,6 @@ export const realtimeSlice = createSlice({
     receiveTelemetry: (state, action: PayloadAction<number>) => {
       state.currentValue = action.payload;
 
-      // Реализация "скользящего окна" (храним последние 50 точек для графиков)
       const newPoint = {
         time: new Date().toLocaleTimeString(),
         value: action.payload,
@@ -41,7 +40,7 @@ export const realtimeSlice = createSlice({
 
       state.history.push(newPoint);
       if (state.history.length > 50) {
-        state.history.shift(); // Удаляем самую старую точку
+        state.history.shift();
       }
     },
     addLog: (state, action: PayloadAction<string>) => {
@@ -51,5 +50,5 @@ export const realtimeSlice = createSlice({
 });
 
 export const { setConnectionStatus, setSourceIp, receiveTelemetry, addLog } =
-  realtimeSlice.actions;
-export default realtimeSlice.reducer;
+  telemetrySlice.actions;
+export default telemetrySlice.reducer;

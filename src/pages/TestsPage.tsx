@@ -1,60 +1,10 @@
-// import { useState } from "react";
-// import { useStomp } from "../hooks/useStomp";
-
-// export default function TestsPage() {
-//   const [ip, setIp] = useState<string>("127.0.0.1");
-//   const [submittedIp, setSubmittedIp] = useState<string>(""); // IP, по которому реально подписываемся
-
-//   // Подключаемся и подписываемся только по submittedIp
-//   const { value, isConnected, sendMessage } = useStomp(submittedIp);
-
-//   const handleSubmit = (e: React.SubmitEvent) => {
-//     e.preventDefault();
-//     // При сабмите мы "фиксируем" IP, и хук пересоздаст подключение с новым sourceIp
-//     setSubmittedIp(ip.trim());
-//   };
-
-//   return (
-//     <>
-//       <h1>Здесь будут испытания</h1>
-
-//       <h2>Status: {isConnected ? "🟢 Online" : "🔴 Offline"}</h2>
-
-//       {/* Пример отправки произвольного сообщения (если бэку нужно) */}
-//       <button
-//         onClick={() =>
-//           sendMessage("/app/frontend/messages", { message: "Привет от фронта" })
-//         }
-//         disabled={!isConnected}
-//       >
-//         Отправить привет
-//       </button>
-
-//       <form onSubmit={handleSubmit} style={{ marginTop: 20 }}>
-//         <input
-//           type="text"
-//           value={ip}
-//           onChange={(e) => setIp(e.target.value)}
-//           placeholder="Введите IP (sourceIp)"
-//         />
-//         <button type="submit">Подписаться по этому IP</button>
-//       </form>
-
-//       <p>Текущий sourceIp для подписки: {submittedIp || "(не задан)"}</p>
-
-//       <h3>Полученное значение:</h3>
-//       <pre>{value !== null ? value : "Пока ничего не пришло"}</pre>
-//     </>
-//   );
-// }
-
 import { useState, useEffect } from "react";
 import { useStomp } from "../hooks/useStomp";
 import { useSelector, useDispatch } from "react-redux";
 
-import { setSourceIp, receiveTelemetry } from "../store/slices/realtimeSlice";
+import { setSourceIp, receiveTelemetry } from "../store/slices/telemetrySlice";
 import type { RootState } from "../store/store";
-import TelemetryChart from "../components/testsPage/TelemetryChart";
+
 import TestWizard from "../components/testsPage/TestWizard";
 
 export default function TestsPage() {
@@ -62,8 +12,8 @@ export default function TestsPage() {
   const [isMocking, setIsMocking] = useState<boolean>(false);
 
   const dispatch = useDispatch();
-  const { isConnected, currentValue, sourceIp, logs } = useSelector(
-    (state: RootState) => state.realtime,
+  const { isConnected, sourceIp } = useSelector(
+    (state: RootState) => state.telemetry,
   );
 
   const { sendMessage } = useStomp(sourceIp || "");
