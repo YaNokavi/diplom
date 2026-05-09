@@ -287,6 +287,15 @@ function Step3({
     }
   };
 
+  if (programs.length === 0) {
+    return (
+      <div>
+        <h3 style={{ marginTop: 0 }}>3. Выбор программы испытаний</h3>
+        <Card><p style={{ margin: 0, color: "#626c71" }}>Программ испытаний для данного типа устройства нет.</p></Card>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h3 style={{ marginTop: 0 }}>3. Выбор программы испытаний</h3>
@@ -335,12 +344,10 @@ function Step4() {
     error,
   } = useSelector((s: RootState) => s.testing);
   const { isConnected, latest } = useSelector((s: RootState) => s.telemetry);
+  const sourceIp = useSelector((s: RootState) => s.telemetry.sourceIp) ?? "";
   const [loading, setLoading] = useState(false);
 
-  // WS connects when sourceIp is set in store (done on stand attach)
-  useStomp(
-    useSelector((s: RootState) => s.telemetry.sourceIp) ?? ""
-  );
+  useStomp(sourceIp);
 
   const handleCreateAndStart = async () => {
     if (!registeredDeviceId || !selectedStandId || !selectedProgramId) return;
@@ -389,7 +396,6 @@ function Step4() {
       <h3 style={{ marginTop: 0 }}>4. Проведение испытания</h3>
       {error && <ErrorBanner message={error} />}
 
-      {/* Параметры сессии */}
       {selectedProgram && (
         <Card>
           <div style={{ fontWeight: "bold", marginBottom: 10 }}>Параметры испытания</div>
@@ -419,7 +425,6 @@ function Step4() {
         </Card>
       )}
 
-      {/* Статус сессии */}
       {activeSession && (
         <Card>
           <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
@@ -443,7 +448,6 @@ function Step4() {
         </Card>
       )}
 
-      {/* Live метрики */}
       {latest && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 16 }}>
           {([
@@ -464,7 +468,6 @@ function Step4() {
 
       <TelemetryChart />
 
-      {/* Кнопки управления */}
       <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
         {!activeSessionId && (
           <button
@@ -605,7 +608,6 @@ export default function TestWizard() {
   );
 
   const handleProgramLoaded = useCallback(() => {
-    // programSelected is already dispatched inside Step3
     dispatch(nextStep());
   }, [dispatch]);
 
@@ -614,6 +616,10 @@ export default function TestWizard() {
     if (currentStep === 3 && !selectedProgramId) return false;
     return true;
   };
+
+  // Гарантируем что массивы не null/undefined если бэк вернул null
+  const stands: StandResponse[] = setup?.availableStands ?? [];
+  const programs: TestProgramShortResponse[] = setup?.testPrograms ?? [];
 
   return (
     <div
@@ -629,19 +635,15 @@ export default function TestWizard() {
       <StepIndicator step={currentStep} />
 
       {currentStep === 1 && <Step1 onSetupLoaded={handleSetupLoaded} />}
-      {currentStep === 2 && setup && (
-        <Step2 stands={setup.availableStands} onAttached={handleStandAttached} />
+      {currentStep === 2 && (
+        <Step2 stands={stands} onAttached={handleStandAttached} />
       )}
-      {currentStep === 3 && setup && (
-        <Step3
-          programs={setup.testPrograms}
-          onProgramLoaded={handleProgramLoaded}
-        />
+      {currentStep === 3 && (
+        <Step3 programs={programs} onProgramLoaded={handleProgramLoaded} />
       )}
       {currentStep === 4 && <Step4 />}
       {currentStep === 5 && <Step5 />}
 
-      {/* Navigation footer */}
       <div
         style={{
           display: "flex",
@@ -666,7 +668,7 @@ export default function TestWizard() {
           Назад
         </button>
 
-        {currentStep < 5 && currentStep > 1 && (
+        {currentStep < 5 && currentStep > 1 && currentStep !== 4 && (
           <button
             onClick={() => dispatch(nextStep())}
             disabled={!canGoNext()}
