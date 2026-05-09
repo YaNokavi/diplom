@@ -100,8 +100,6 @@ function inputStyle(): React.CSSProperties {
   return { width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #e8e8e8", fontSize: 14, boxSizing: "border-box" };
 }
 
-// ────────────────────────────── Step 1: Register device + load setup
-
 function Step1({
   onSetupLoaded,
 }: {
@@ -180,8 +178,6 @@ function Step1({
   );
 }
 
-// ────────────────────────────── Step 2: Stand selection + attach
-
 function Step2({
   stands,
   onAttached,
@@ -242,7 +238,7 @@ function Step2({
             <div style={{ fontSize: 13, color: "#626c71" }}>
               {stand.ipAddress}:{stand.port} &nbsp;·&nbsp;
               <span style={{ color: stand.status === "AVAILABLE" ? "#22c25d" : "#e68161", fontWeight: 500 }}>
-                {stand.status}
+                {stand.status ?? "Неизвестен"}
               </span>
             </div>
           </div>
@@ -258,8 +254,6 @@ function Step2({
     </div>
   );
 }
-
-// ────────────────────────────── Step 3: Program selection
 
 function Step3({
   programs,
@@ -317,10 +311,12 @@ function Step3({
           >
             <div style={{ fontWeight: "bold", marginBottom: 4 }}>{prog.name}</div>
             <div style={{ fontSize: 13, color: "#626c71" }}>
-              {prog.testType} · v{prog.version} ·
-              <span style={{ marginLeft: 4, color: prog.isActive ? "#22c25d" : "#a7a9a9" }}>
-                {prog.isActive ? "Активна" : "Неактивна"}
-              </span>
+              {prog.testType} · v{prog.version}
+              {prog.isActive !== undefined && (
+                <span style={{ marginLeft: 6, color: prog.isActive ? "#22c25d" : "#a7a9a9" }}>
+                  · {prog.isActive ? "Активна" : "Неактивна"}
+                </span>
+              )}
             </div>
           </div>
         ))}
@@ -328,8 +324,6 @@ function Step3({
     </div>
   );
 }
-
-// ────────────────────────────── Step 4: Run test
 
 function Step4() {
   const dispatch = useDispatch<AppDispatch>();
@@ -504,8 +498,6 @@ function statusColor(status: string) {
   return "#626c71";
 }
 
-// ────────────────────────────── Step 5: Results + report
-
 function Step5() {
   const dispatch = useDispatch<AppDispatch>();
   const { registeredDeviceId, activeSession, device } = useSelector(
@@ -581,8 +573,6 @@ function Step5() {
   );
 }
 
-// ────────────────────────────── Root Wizard
-
 export default function TestWizard() {
   const dispatch = useDispatch<AppDispatch>();
   const { currentStep, selectedStandId, selectedProgramId } = useSelector(
@@ -617,8 +607,7 @@ export default function TestWizard() {
     return true;
   };
 
-  // Гарантируем что массивы не null/undefined если бэк вернул null
-  const stands: StandResponse[] = setup?.availableStands ?? [];
+  const stands: StandResponse[] = setup?.stands ?? [];
   const programs: TestProgramShortResponse[] = setup?.testPrograms ?? [];
 
   return (
