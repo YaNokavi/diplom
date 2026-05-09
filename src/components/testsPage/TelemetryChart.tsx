@@ -70,15 +70,6 @@ export default function TelemetryChart() {
           />
           <Line
             type="monotone"
-            dataKey="dutHeartbeat"
-            name="Heartbeat"
-            stroke="#f59e0b"
-            strokeWidth={1.5}
-            dot={false}
-            isAnimationActive={false}
-          />
-          <Line
-            type="monotone"
             dataKey="dutErrorFlag"
             name="Ошибка"
             stroke="#e68161"
