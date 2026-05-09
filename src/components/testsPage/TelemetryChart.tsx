@@ -7,6 +7,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
 
@@ -15,7 +16,7 @@ export default function TelemetryChart() {
 
   if (history.length === 0) {
     return (
-      <div style={{ marginTop: 20, color: "#626c71" }}>
+      <div style={{ marginTop: 20, color: "#626c71", textAlign: "center" }}>
         Ожидание поступления данных...
       </div>
     );
@@ -24,7 +25,7 @@ export default function TelemetryChart() {
   return (
     <div
       style={{
-        height: 300,
+        height: 320,
         width: "100%",
         marginTop: 20,
         background: "#fff",
@@ -33,25 +34,14 @@ export default function TelemetryChart() {
         border: "1px solid #e8e8e8",
       }}
     >
-      <h3
-        style={{
-          marginTop: 0,
-          marginBottom: 16,
-          color: "#1f2121",
-          fontSize: 16,
-        }}
-      >
+      <h3 style={{ marginTop: 0, marginBottom: 12, color: "#1f2121", fontSize: 15 }}>
         Телеметрия в реальном времени
       </h3>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={history}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e8e8e8" />
-          <XAxis dataKey="time" tick={{ fontSize: 12 }} stroke="#a7a9a9" />
-          <YAxis
-            tick={{ fontSize: 12 }}
-            stroke="#a7a9a9"
-            domain={["auto", "auto"]}
-          />
+          <XAxis dataKey="time" tick={{ fontSize: 11 }} stroke="#a7a9a9" />
+          <YAxis tick={{ fontSize: 11 }} stroke="#a7a9a9" domain={["auto", "auto"]} />
           <Tooltip
             contentStyle={{
               borderRadius: 8,
@@ -59,11 +49,40 @@ export default function TelemetryChart() {
               boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
             }}
           />
+          <Legend />
           <Line
             type="monotone"
-            dataKey="value"
+            dataKey="dutOutputVoltage"
+            name="Напряжение (V)"
             stroke="#2180a0"
             strokeWidth={2}
+            dot={false}
+            isAnimationActive={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="phase"
+            name="Фаза"
+            stroke="#22c25d"
+            strokeWidth={1.5}
+            dot={false}
+            isAnimationActive={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="dutHeartbeat"
+            name="Heartbeat"
+            stroke="#f59e0b"
+            strokeWidth={1.5}
+            dot={false}
+            isAnimationActive={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="dutErrorFlag"
+            name="Ошибка"
+            stroke="#e68161"
+            strokeWidth={1.5}
             dot={false}
             isAnimationActive={false}
           />
