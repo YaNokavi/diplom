@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import telemetryReducer from "./slices/telemetrySlice";
+import testingReducer from "./slices/testingSlice";
 
 export const store = configureStore({
   reducer: {
     telemetry: telemetryReducer,
+    testing: testingReducer,
   },
 });
 
