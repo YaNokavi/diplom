@@ -7,8 +7,10 @@ import {
   receiveTelemetry,
   addLog,
 } from "../store/slices/telemetrySlice";
+import type { PlcDataMessage } from "../types/api";
 
-const WEBSOCKET_URL = "wss://diplomabffservice-anderm.amvera.io/ws";
+const WEBSOCKET_URL =
+  import.meta.env.VITE_WS_URL ?? "ws://localhost/ws";
 
 export const useStomp = (sourceIp: string) => {
   const dispatch = useDispatch();
@@ -25,27 +27,44 @@ export const useStomp = (sourceIp: string) => {
 
       onConnect: () => {
         dispatch(setConnectionStatus(true));
+        dispatch(addLog(`Подключено к стенду: ${sourceIp}`));
 
         client.subscribe(
           "/user/queue/realtime",
           (message: IMessage) => {
-            const num = Number(message.body);
-            if (!isNaN(num)) {
-              dispatch(receiveTelemetry(num));
+            try {
+              const parsed: PlcDataMessage = JSON.parse(message.body);
+              dispatch(receiveTelemetry(parsed));
+            } catch {
+              // fallback: если бэк пошлёт простое число (legacy)
+              const num = Number(message.body);
+              if (!isNaN(num)) {
+                dispatch(
+                  receiveTelemetry({
+                    dutOutputVoltage: num,
+                    phase: null,
+                    dutErrorFlag: null,
+                    dutHeartbeat: null,
+                  })
+                );
+              } else {
+                dispatch(addLog(`Неизвестный формат сообщения: ${message.body}`));
+              }
             }
           },
-          {
-            sourceIp: sourceIp,
-          },
+          { sourceIp }
         );
       },
 
       onDisconnect: () => {
         dispatch(setConnectionStatus(false));
+        dispatch(addLog("Соединение разорвано"));
       },
 
       onStompError: (frame) => {
-        dispatch(addLog(`Broker Error: ${frame.headers["message"]}`));
+        dispatch(
+          addLog(`STOMP Error: ${frame.headers["message"] ?? "неизвестная ошибка"}`)
+        );
       },
     });
 
@@ -58,16 +77,13 @@ export const useStomp = (sourceIp: string) => {
     };
   }, [sourceIp, dispatch]);
 
-  const sendMessage = (destination: string, body: any) => {
+  const sendMessage = (destination: string, body: unknown) => {
     const client = clientRef.current;
-    if (client && client.connected) {
-      client.publish({
-        destination,
-        body: JSON.stringify(body),
-      });
+    if (client?.connected) {
+      client.publish({ destination, body: JSON.stringify(body) });
       dispatch(addLog(`Отправлено сообщение в ${destination}`));
     } else {
-      dispatch(addLog("Ошибка отправки: STOMP не подключен"));
+      dispatch(addLog("Ошибка отправки: STOMP не подключён"));
     }
   };
 
