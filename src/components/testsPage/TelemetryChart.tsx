@@ -59,24 +59,6 @@ export default function TelemetryChart() {
             dot={false}
             isAnimationActive={false}
           />
-          <Line
-            type="monotone"
-            dataKey="phase"
-            name="Фаза"
-            stroke="#22c25d"
-            strokeWidth={1.5}
-            dot={false}
-            isAnimationActive={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="dutErrorFlag"
-            name="Ошибка"
-            stroke="#e68161"
-            strokeWidth={1.5}
-            dot={false}
-            isAnimationActive={false}
-          />
         </LineChart>
       </ResponsiveContainer>
     </div>
