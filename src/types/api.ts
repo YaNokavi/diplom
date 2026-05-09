@@ -2,7 +2,7 @@
 
 export type DeviceStatus = "AVAILABLE" | "IN_USE" | "MAINTENANCE";
 
-export type StandStatus = "AVAILABLE" | "BUSY" | "MAINTENANCE";
+export type StandStatus = "AVAILABLE" | "BUSY" | "MAINTENANCE" | null;
 
 export type TestSessionStatus =
   | "CREATED"
@@ -49,6 +49,7 @@ export interface StandResponse {
   ipAddress: string;
   port: number;
   status: StandStatus;
+  attachedDeviceId: number | null;
 }
 
 // ─── Test Program ─────────────────────────────────────────────────────────────
@@ -59,7 +60,8 @@ export interface TestProgramShortResponse {
   testType: string;
   deviceType: string;
   version: number;
-  isActive: boolean;
+  description: string | null;
+  isActive?: boolean;
 }
 
 export interface TestProgramParameterResponse {
@@ -73,7 +75,6 @@ export interface TestProgramParameterResponse {
 }
 
 export interface TestProgramDetailResponse extends TestProgramShortResponse {
-  description: string | null;
   instructionUrl: string | null;
   createdBy: string;
   durationSeconds: number;
@@ -85,7 +86,7 @@ export interface TestProgramDetailResponse extends TestProgramShortResponse {
 
 export interface TestingSetupResponse {
   device: DeviceResponse;
-  availableStands: StandResponse[];
+  stands: StandResponse[];          // реальное название поля с бэка
   testPrograms: TestProgramShortResponse[];
   attachedStand: StandResponse | null;
 }
