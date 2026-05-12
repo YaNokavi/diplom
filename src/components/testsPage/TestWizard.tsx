@@ -13,10 +13,7 @@ import {
   prevStep,
   resetWizard,
 } from "../../store/slices/testingSlice";
-import {
-  setSourceIp,
-  resetTelemetry,
-} from "../../store/slices/telemetrySlice";
+import { setSourceIp, resetTelemetry } from "../../store/slices/telemetrySlice";
 import { useStomp } from "../../hooks/useStomp";
 import TelemetryChart from "./TelemetryChart";
 import type {
@@ -36,17 +33,18 @@ import {
   downloadDeviceReport,
 } from "../../services/testingService";
 
-const STEP_LABELS = [
-  "Устройство",
-  "Стенд",
-  "Программа",
-  "Испытание",
-  "Итоги",
-];
+const STEP_LABELS = ["Устройство", "Стенд", "Программа", "Испытание", "Итоги"];
 
 function StepIndicator({ step }: { step: number }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 32, position: "relative" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        marginBottom: 32,
+        position: "relative",
+      }}
+    >
       {STEP_LABELS.map((label, i) => {
         const num = i + 1;
         const active = step >= num;
@@ -70,7 +68,9 @@ function StepIndicator({ step }: { step: number }) {
             >
               {num}
             </div>
-            <div style={{ fontSize: 12, color: active ? "#1f2121" : "#a7a9a9" }}>
+            <div
+              style={{ fontSize: 12, color: active ? "#1f2121" : "#a7a9a9" }}
+            >
               {label}
             </div>
           </div>
@@ -82,7 +82,15 @@ function StepIndicator({ step }: { step: number }) {
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ background: "#fcfcf9", borderLeft: "4px solid #2180a0", padding: 16, borderRadius: 8, marginBottom: 16 }}>
+    <div
+      style={{
+        background: "#fcfcf9",
+        borderLeft: "4px solid #2180a0",
+        padding: 16,
+        borderRadius: 8,
+        marginBottom: 16,
+      }}
+    >
       {children}
     </div>
   );
@@ -90,14 +98,31 @@ function Card({ children }: { children: React.ReactNode }) {
 
 function ErrorBanner({ message }: { message: string }) {
   return (
-    <div style={{ background: "#fee2e2", border: "1px solid #fca5a5", color: "#991b1b", borderRadius: 8, padding: "10px 16px", marginBottom: 16, fontSize: 14 }}>
+    <div
+      style={{
+        background: "#fee2e2",
+        border: "1px solid #fca5a5",
+        color: "#991b1b",
+        borderRadius: 8,
+        padding: "10px 16px",
+        marginBottom: 16,
+        fontSize: 14,
+      }}
+    >
       ⚠️ {message}
     </div>
   );
 }
 
 function inputStyle(): React.CSSProperties {
-  return { width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #e8e8e8", fontSize: 14, boxSizing: "border-box" };
+  return {
+    width: "100%",
+    padding: "9px 12px",
+    borderRadius: 8,
+    border: "1px solid #e8e8e8",
+    fontSize: 14,
+    boxSizing: "border-box",
+  };
 }
 
 function Step1({
@@ -130,7 +155,8 @@ function Step1({
       dispatch(deviceRegistered({ deviceId, device: setup.device }));
       onSetupLoaded(setup);
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Ошибка регистрации устройства";
+      const msg =
+        e instanceof Error ? e.message : "Ошибка регистрации устройства";
       dispatch(setError(msg));
     } finally {
       setLoading(false);
@@ -143,34 +169,115 @@ function Step1({
       {error && <ErrorBanner message={error} />}
       <div style={{ display: "grid", gap: 12 }}>
         <div>
-          <label style={{ display: "block", marginBottom: 4, fontSize: 13, color: "#626c71" }}>Название *</label>
-          <input style={inputStyle()} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="ИУТ-001 ПЛК" />
+          <label
+            style={{
+              display: "block",
+              marginBottom: 4,
+              fontSize: 13,
+              color: "#626c71",
+            }}
+          >
+            Название *
+          </label>
+          <input
+            style={inputStyle()}
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            placeholder="ИУТ-001 ПЛК"
+          />
         </div>
         <div>
-          <label style={{ display: "block", marginBottom: 4, fontSize: 13, color: "#626c71" }}>Тип устройства</label>
-          <select style={inputStyle()} value={form.deviceType} onChange={e => setForm({ ...form, deviceType: e.target.value })}>
+          <label
+            style={{
+              display: "block",
+              marginBottom: 4,
+              fontSize: 13,
+              color: "#626c71",
+            }}
+          >
+            Тип устройства
+          </label>
+          <select
+            style={inputStyle()}
+            value={form.deviceType}
+            onChange={(e) => setForm({ ...form, deviceType: e.target.value })}
+          >
             <option value="PLC">PLC</option>
             <option value="SENSOR">SENSOR</option>
             <option value="PSU">PSU</option>
           </select>
         </div>
         <div>
-          <label style={{ display: "block", marginBottom: 4, fontSize: 13, color: "#626c71" }}>Модель</label>
-          <input style={inputStyle()} value={form.model} onChange={e => setForm({ ...form, model: e.target.value })} placeholder="ОВЕН ПЛК" />
+          <label
+            style={{
+              display: "block",
+              marginBottom: 4,
+              fontSize: 13,
+              color: "#626c71",
+            }}
+          >
+            Модель
+          </label>
+          <input
+            style={inputStyle()}
+            value={form.model}
+            onChange={(e) => setForm({ ...form, model: e.target.value })}
+            placeholder="ОВЕН ПЛК"
+          />
         </div>
         <div>
-          <label style={{ display: "block", marginBottom: 4, fontSize: 13, color: "#626c71" }}>Серийный номер *</label>
-          <input style={inputStyle()} value={form.serialNumber} onChange={e => setForm({ ...form, serialNumber: e.target.value })} placeholder="PLC-VV-001" />
+          <label
+            style={{
+              display: "block",
+              marginBottom: 4,
+              fontSize: 13,
+              color: "#626c71",
+            }}
+          >
+            Серийный номер *
+          </label>
+          <input
+            style={inputStyle()}
+            value={form.serialNumber}
+            onChange={(e) => setForm({ ...form, serialNumber: e.target.value })}
+            placeholder="PLC-VV-001"
+          />
         </div>
         <div>
-          <label style={{ display: "block", marginBottom: 4, fontSize: 13, color: "#626c71" }}>Версия прошивки</label>
-          <input style={inputStyle()} value={form.firmwareVersion} onChange={e => setForm({ ...form, firmwareVersion: e.target.value })} placeholder="1.0.0" />
+          <label
+            style={{
+              display: "block",
+              marginBottom: 4,
+              fontSize: 13,
+              color: "#626c71",
+            }}
+          >
+            Версия прошивки
+          </label>
+          <input
+            style={inputStyle()}
+            value={form.firmwareVersion}
+            onChange={(e) =>
+              setForm({ ...form, firmwareVersion: e.target.value })
+            }
+            placeholder="1.0.0"
+          />
         </div>
       </div>
       <button
         onClick={handleRegister}
         disabled={loading}
-        style={{ marginTop: 20, padding: "10px 24px", background: loading ? "#a7a9a9" : "#2180a0", color: "#fff", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", fontWeight: "bold", fontSize: 14 }}
+        style={{
+          marginTop: 20,
+          padding: "10px 24px",
+          background: loading ? "#a7a9a9" : "#2180a0",
+          color: "#fff",
+          border: "none",
+          borderRadius: 8,
+          cursor: loading ? "not-allowed" : "pointer",
+          fontWeight: "bold",
+          fontSize: 14,
+        }}
       >
         {loading ? "Регистрация..." : "Зарегистрировать устройство"}
       </button>
@@ -187,7 +294,7 @@ function Step2({
 }) {
   const dispatch = useDispatch<AppDispatch>();
   const { registeredDeviceId, selectedStandId, error } = useSelector(
-    (s: RootState) => s.testing
+    (s: RootState) => s.testing,
   );
   const [loading, setLoading] = useState(false);
 
@@ -197,7 +304,7 @@ function Step2({
     dispatch(setError(null));
     try {
       await attachDeviceToStand(selectedStandId, registeredDeviceId);
-      const stand = stands.find(s => s.id === selectedStandId)!;
+      const stand = stands.find((s) => s.id === selectedStandId)!;
       onAttached(stand);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Ошибка привязки к стенду";
@@ -211,7 +318,11 @@ function Step2({
     return (
       <div>
         <h3 style={{ marginTop: 0 }}>2. Выбор стенда</h3>
-        <Card><p style={{ margin: 0, color: "#626c71" }}>Доступных стендов нет. Обратитесь к администратору.</p></Card>
+        <Card>
+          <p style={{ margin: 0, color: "#626c71" }}>
+            Доступных стендов нет. Обратитесь к администратору.
+          </p>
+        </Card>
       </div>
     );
   }
@@ -221,7 +332,7 @@ function Step2({
       <h3 style={{ marginTop: 0 }}>2. Выбор стенда</h3>
       {error && <ErrorBanner message={error} />}
       <div style={{ display: "grid", gap: 10 }}>
-        {stands.map(stand => (
+        {stands.map((stand) => (
           <div
             key={stand.id}
             onClick={() => dispatch(standSelected({ stand }))}
@@ -229,15 +340,25 @@ function Step2({
               padding: 14,
               borderRadius: 8,
               border: `2px solid ${selectedStandId === stand.id ? "#2180a0" : "#e8e8e8"}`,
-              background: selectedStandId === stand.id ? "rgba(33,128,160,0.07)" : "#fcfcf9",
+              background:
+                selectedStandId === stand.id
+                  ? "rgba(33,128,160,0.07)"
+                  : "#fcfcf9",
               cursor: "pointer",
               transition: "all 0.2s",
             }}
           >
-            <div style={{ fontWeight: "bold", marginBottom: 4 }}>{stand.name}</div>
+            <div style={{ fontWeight: "bold", marginBottom: 4 }}>
+              {stand.name}
+            </div>
             <div style={{ fontSize: 13, color: "#626c71" }}>
               {stand.ipAddress}:{stand.port} &nbsp;·&nbsp;
-              <span style={{ color: stand.status === "AVAILABLE" ? "#22c25d" : "#e68161", fontWeight: 500 }}>
+              <span
+                style={{
+                  color: stand.status === "AVAILABLE" ? "#22c25d" : "#e68161",
+                  fontWeight: 500,
+                }}
+              >
                 {stand.status ?? "Неизвестен"}
               </span>
             </div>
@@ -247,7 +368,17 @@ function Step2({
       <button
         onClick={handleAttach}
         disabled={!selectedStandId || loading}
-        style={{ marginTop: 20, padding: "10px 24px", background: (!selectedStandId || loading) ? "#a7a9a9" : "#2180a0", color: "#fff", border: "none", borderRadius: 8, cursor: (!selectedStandId || loading) ? "not-allowed" : "pointer", fontWeight: "bold", fontSize: 14 }}
+        style={{
+          marginTop: 20,
+          padding: "10px 24px",
+          background: !selectedStandId || loading ? "#a7a9a9" : "#2180a0",
+          color: "#fff",
+          border: "none",
+          borderRadius: 8,
+          cursor: !selectedStandId || loading ? "not-allowed" : "pointer",
+          fontWeight: "bold",
+          fontSize: 14,
+        }}
       >
         {loading ? "Привязка..." : "Привязать устройство"}
       </button>
@@ -285,7 +416,11 @@ function Step3({
     return (
       <div>
         <h3 style={{ marginTop: 0 }}>3. Выбор программы испытаний</h3>
-        <Card><p style={{ margin: 0, color: "#626c71" }}>Программ испытаний для данного типа устройства нет.</p></Card>
+        <Card>
+          <p style={{ margin: 0, color: "#626c71" }}>
+            Программ испытаний для данного типа устройства нет.
+          </p>
+        </Card>
       </div>
     );
   }
@@ -294,9 +429,13 @@ function Step3({
     <div>
       <h3 style={{ marginTop: 0 }}>3. Выбор программы испытаний</h3>
       {error && <ErrorBanner message={error} />}
-      {loading && <div style={{ color: "#626c71", marginBottom: 12 }}>Загрузка программы...</div>}
+      {loading && (
+        <div style={{ color: "#626c71", marginBottom: 12 }}>
+          Загрузка программы...
+        </div>
+      )}
       <div style={{ display: "grid", gap: 10 }}>
-        {programs.map(prog => (
+        {programs.map((prog) => (
           <div
             key={prog.id}
             onClick={() => !loading && handleSelectProgram(prog.id)}
@@ -304,16 +443,26 @@ function Step3({
               padding: 14,
               borderRadius: 8,
               border: `2px solid ${selectedProgramId === prog.id ? "#2180a0" : "#e8e8e8"}`,
-              background: selectedProgramId === prog.id ? "rgba(33,128,160,0.07)" : "#fcfcf9",
+              background:
+                selectedProgramId === prog.id
+                  ? "rgba(33,128,160,0.07)"
+                  : "#fcfcf9",
               cursor: loading ? "wait" : "pointer",
               transition: "all 0.2s",
             }}
           >
-            <div style={{ fontWeight: "bold", marginBottom: 4 }}>{prog.name}</div>
+            <div style={{ fontWeight: "bold", marginBottom: 4 }}>
+              {prog.name}
+            </div>
             <div style={{ fontSize: 13, color: "#626c71" }}>
               {prog.testType} · v{prog.version}
               {prog.isActive !== undefined && (
-                <span style={{ marginLeft: 6, color: prog.isActive ? "#22c25d" : "#a7a9a9" }}>
+                <span
+                  style={{
+                    marginLeft: 6,
+                    color: prog.isActive ? "#22c25d" : "#a7a9a9",
+                  }}
+                >
                   · {prog.isActive ? "Активна" : "Неактивна"}
                 </span>
               )}
@@ -387,7 +536,7 @@ function Step4() {
 
   const isRunning = activeSession?.status === "RUNNING";
   const isFinished = ["COMPLETED", "ABORTED", "FAILED", "FINISHED"].includes(
-    activeSession?.status ?? ""
+    activeSession?.status ?? "",
   );
 
   return (
@@ -397,23 +546,39 @@ function Step4() {
 
       {selectedProgram && (
         <Card>
-          <div style={{ fontWeight: "bold", marginBottom: 10 }}>Параметры испытания</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            {selectedProgram.parameters.map(param => (
+          <div style={{ fontWeight: "bold", marginBottom: 10 }}>
+            Параметры испытания
+          </div>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}
+          >
+            {selectedProgram.parameters.map((param) => (
               <div key={param.parameterName}>
-                <label style={{ display: "block", fontSize: 12, color: "#626c71", marginBottom: 3 }}>
-                  {param.parameterName}{param.unit ? ` (${param.unit})` : ""}
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: 12,
+                    color: "#626c71",
+                    marginBottom: 3,
+                  }}
+                >
+                  {param.parameterName}
+                  {param.unit ? ` (${param.unit})` : ""}
                 </label>
                 <input
                   type="number"
                   style={inputStyle()}
-                  value={sessionParameters[param.parameterName] ?? param.defaultValue ?? ""}
-                  onChange={e =>
+                  value={
+                    sessionParameters[param.parameterName] ??
+                    param.defaultValue ??
+                    ""
+                  }
+                  onChange={(e) =>
                     dispatch(
                       setSessionParameter({
                         name: param.parameterName,
                         value: Number(e.target.value),
-                      })
+                      }),
                     )
                   }
                   disabled={isRunning}
@@ -428,8 +593,15 @@ function Step4() {
         <Card>
           <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
             <div>
-              <div style={{ fontSize: 12, color: "#a7a9a9" }}>Статус сессии</div>
-              <div style={{ fontWeight: "bold", color: statusColor(activeSession.status) }}>
+              <div style={{ fontSize: 12, color: "#a7a9a9" }}>
+                Статус сессии
+              </div>
+              <div
+                style={{
+                  fontWeight: "bold",
+                  color: statusColor(activeSession.status),
+                }}
+              >
                 {activeSession.status}
               </div>
             </div>
@@ -439,7 +611,12 @@ function Step4() {
             </div>
             <div>
               <div style={{ fontSize: 12, color: "#a7a9a9" }}>WebSocket</div>
-              <div style={{ fontWeight: "bold", color: isConnected ? "#22c25d" : "#e68161" }}>
+              <div
+                style={{
+                  fontWeight: "bold",
+                  color: isConnected ? "#22c25d" : "#e68161",
+                }}
+              >
                 {isConnected ? "Связан" : "Нет связи"}
               </div>
             </div>
@@ -448,17 +625,54 @@ function Step4() {
       )}
 
       {latest && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 16 }}>
-          {([
-            { label: "Напряжение", value: latest.dutOutputVoltage, unit: "V" },
-            { label: "Фаза", value: latest.phase, unit: "" },
-            { label: "Heartbeat", value: latest.dutHeartbeat, unit: "" },
-            { label: "Ошибка", value: latest.dutErrorFlag, unit: "", warn: true },
-          ] as const).map(({ label, value, unit, warn }) => (
-            <div key={label} style={{ background: "#fff", border: "1px solid #e8e8e8", borderRadius: 8, padding: 12, textAlign: "center" }}>
-              <div style={{ fontSize: 11, color: "#a7a9a9", marginBottom: 4 }}>{label}</div>
-              <div style={{ fontSize: 22, fontWeight: "bold", color: warn && value ? "#e68161" : "#2180a0" }}>
-                {value !== null && value !== undefined ? `${value}${unit ? ` ${unit}` : ""}` : "—"}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 10,
+            marginBottom: 16,
+          }}
+        >
+          {(
+            [
+              {
+                label: "Напряжение",
+                value: latest.dutOutputVoltage,
+                unit: "V",
+              },
+              { label: "Фаза", value: latest.phase, unit: "" },
+              { label: "Heartbeat", value: latest.dutHeartbeat, unit: "" },
+              {
+                label: "Ошибка",
+                value: latest.dutErrorFlag,
+                unit: "",
+                warn: true,
+              },
+            ] as const
+          ).map(({ label, value, unit, warn }) => (
+            <div
+              key={label}
+              style={{
+                background: "#fff",
+                border: "1px solid #e8e8e8",
+                borderRadius: 8,
+                padding: 12,
+                textAlign: "center",
+              }}
+            >
+              <div style={{ fontSize: 11, color: "#a7a9a9", marginBottom: 4 }}>
+                {label}
+              </div>
+              <div
+                style={{
+                  fontSize: 22,
+                  fontWeight: "bold",
+                  color: warn && value ? "#e68161" : "#2180a0",
+                }}
+              >
+                {value !== null && value !== undefined
+                  ? `${value}${unit ? ` ${unit}` : ""}`
+                  : "—"}
               </div>
             </div>
           ))}
@@ -472,7 +686,15 @@ function Step4() {
           <button
             onClick={handleCreateAndStart}
             disabled={loading || !selectedProgramId}
-            style={{ padding: "10px 24px", background: loading ? "#a7a9a9" : "#2180a0", color: "#fff", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", fontWeight: "bold" }}
+            style={{
+              padding: "10px 24px",
+              background: loading ? "#a7a9a9" : "#2180a0",
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              cursor: loading ? "not-allowed" : "pointer",
+              fontWeight: "bold",
+            }}
           >
             {loading ? "Запуск..." : "Запустить испытание"}
           </button>
@@ -481,13 +703,29 @@ function Step4() {
           <button
             onClick={handleAbort}
             disabled={loading}
-            style={{ padding: "10px 24px", background: "#e68161", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontWeight: "bold" }}
+            style={{
+              padding: "10px 24px",
+              background: "#e68161",
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
           >
             Остановить
           </button>
         )}
         {isFinished && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, color: statusColor(activeSession!.status), fontWeight: "bold" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              color: statusColor(activeSession!.status),
+              fontWeight: "bold",
+            }}
+          >
             ✓ Сессия завершена: {activeSession!.status}
           </div>
         )}
@@ -506,7 +744,7 @@ function statusColor(status: string) {
 function Step5() {
   const dispatch = useDispatch<AppDispatch>();
   const { registeredDeviceId, activeSession, device } = useSelector(
-    (s: RootState) => s.testing
+    (s: RootState) => s.testing,
   );
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
@@ -530,14 +768,20 @@ function Step5() {
   };
 
   const resultColor =
-    activeSession?.status === "COMPLETED" ? "#22c25d" :
-    activeSession?.status === "FAILED" ? "#e68161" : "#a7a9a9";
+    activeSession?.status === "COMPLETED"
+      ? "#22c25d"
+      : activeSession?.status === "FAILED"
+        ? "#e68161"
+        : "#a7a9a9";
 
   return (
     <div style={{ textAlign: "center", padding: "32px 0" }}>
       <div style={{ fontSize: 64, marginBottom: 16 }}>
-        {activeSession?.status === "COMPLETED" ? "✅" :
-         activeSession?.status === "FAILED" ? "❌" : "⏳"}
+        {activeSession?.status === "COMPLETED"
+          ? "✅"
+          : activeSession?.status === "FAILED"
+            ? "❌"
+            : "⏳"}
       </div>
       <h3 style={{ color: resultColor }}>
         {activeSession?.status === "COMPLETED" && "Испытание успешно завершено"}
@@ -563,13 +807,29 @@ function Step5() {
         <button
           onClick={handleDownload}
           disabled={downloading || !registeredDeviceId}
-          style={{ padding: "10px 24px", background: downloading ? "#a7a9a9" : "#2180a0", color: "#fff", border: "none", borderRadius: 8, cursor: downloading ? "not-allowed" : "pointer", fontWeight: "bold" }}
+          style={{
+            padding: "10px 24px",
+            background: downloading ? "#a7a9a9" : "#2180a0",
+            color: "#fff",
+            border: "none",
+            borderRadius: 8,
+            cursor: downloading ? "not-allowed" : "pointer",
+            fontWeight: "bold",
+          }}
         >
           {downloading ? "Скачивание..." : "Скачать отчёт (.docx)"}
         </button>
         <button
           onClick={handleReset}
-          style={{ padding: "10px 24px", background: "#e8e8e8", color: "#1f2121", border: "none", borderRadius: 8, cursor: "pointer", fontWeight: "bold" }}
+          style={{
+            padding: "10px 24px",
+            background: "#e8e8e8",
+            color: "#1f2121",
+            border: "none",
+            borderRadius: 8,
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
         >
           Новое испытание
         </button>
@@ -581,7 +841,7 @@ function Step5() {
 export default function TestWizard() {
   const dispatch = useDispatch<AppDispatch>();
   const { currentStep, selectedStandId, selectedProgramId } = useSelector(
-    (s: RootState) => s.testing
+    (s: RootState) => s.testing,
   );
 
   const [setup, setSetup] = useState<TestingSetupResponse | null>(null);
@@ -591,7 +851,7 @@ export default function TestWizard() {
       setSetup(loadedSetup);
       dispatch(nextStep());
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleStandAttached = useCallback(
@@ -599,7 +859,7 @@ export default function TestWizard() {
       dispatch(setSourceIp(stand.ipAddress));
       dispatch(nextStep());
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleProgramLoaded = useCallback(() => {
@@ -618,12 +878,13 @@ export default function TestWizard() {
   return (
     <div
       style={{
-        maxWidth: 860,
-        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
         background: "#fff",
-        padding: 28,
+        padding: 20,
         borderRadius: 12,
         border: "1px solid #e8e8e8",
+        overflowY: "auto",
       }}
     >
       <StepIndicator step={currentStep} />
