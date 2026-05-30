@@ -99,6 +99,8 @@
     padding: 40px;
     background-color: var(--bg-main);
     color: var(--color-primary);
+    height: 100vh;
+    overflow-y: auto;
   }
 }
 

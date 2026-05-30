@@ -353,14 +353,6 @@ function Step2({
             </div>
             <div style={{ fontSize: 13, color: "#626c71" }}>
               {stand.ipAddress}:{stand.port} &nbsp;·&nbsp;
-              <span
-                style={{
-                  color: stand.status === "AVAILABLE" ? "#22c25d" : "#e68161",
-                  fontWeight: 500,
-                }}
-              >
-                {stand.status ?? "Неизвестен"}
-              </span>
             </div>
           </div>
         ))}
@@ -602,7 +594,7 @@ function Step4() {
                   color: statusColor(activeSession.status),
                 }}
               >
-                {activeSession.status}
+                {statusText(activeSession.status)}
               </div>
             </div>
             <div>
@@ -637,11 +629,10 @@ function Step4() {
             [
               {
                 label: "Напряжение",
-                value: latest.dutOutputVoltage,
+                value: latest.dutOutputVoltage?.toFixed(2),
                 unit: "V",
               },
-              { label: "Фаза", value: latest.phase, unit: "" },
-              { label: "Heartbeat", value: latest.dutHeartbeat, unit: "" },
+
               {
                 label: "Ошибка",
                 value: latest.dutErrorFlag,
@@ -726,7 +717,7 @@ function Step4() {
               fontWeight: "bold",
             }}
           >
-            ✓ Сессия завершена: {activeSession!.status}
+            ✓ Сессия завершена: {statusText(activeSession!.status)}
           </div>
         )}
       </div>
@@ -739,6 +730,13 @@ function statusColor(status: string) {
   if (status === "COMPLETED") return "#22c25d";
   if (status === "ABORTED" || status === "FAILED") return "#e68161";
   return "#626c71";
+}
+
+function statusText(status: string) {
+  if (status === "RUNNING") return "В процессе";
+  if (status === "COMPLETED") return "Выполнено";
+  if (status === "ABORTED" || status === "FAILED") return "Прервано";
+  return "Неизвестно";
 }
 
 function Step5() {
@@ -884,7 +882,6 @@ export default function TestWizard() {
         padding: 20,
         borderRadius: 12,
         border: "1px solid #e8e8e8",
-        overflowY: "auto",
       }}
     >
       <StepIndicator step={currentStep} />

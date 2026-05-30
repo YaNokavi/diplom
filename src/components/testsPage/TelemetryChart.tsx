@@ -34,14 +34,25 @@ export default function TelemetryChart() {
         border: "1px solid #e8e8e8",
       }}
     >
-      <h3 style={{ marginTop: 0, marginBottom: 12, color: "#1f2121", fontSize: 15 }}>
-        Телеметрия в реальном времени
+      <h3
+        style={{
+          marginTop: 0,
+          marginBottom: 12,
+          color: "#1f2121",
+          fontSize: 15,
+        }}
+      >
+        Данные со стенда
       </h3>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={history}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e8e8e8" />
           <XAxis dataKey="time" tick={{ fontSize: 11 }} stroke="#a7a9a9" />
-          <YAxis tick={{ fontSize: 11 }} stroke="#a7a9a9" domain={["auto", "auto"]} />
+          <YAxis
+            tick={{ fontSize: 11 }}
+            stroke="#a7a9a9"
+            domain={["auto", "auto"]}
+          />
           <Tooltip
             contentStyle={{
               borderRadius: 8,
