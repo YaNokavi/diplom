@@ -9,11 +9,8 @@ import {
 } from "../store/slices/telemetrySlice";
 import type { PlcDataMessage } from "../types/api";
 
-const WEBSOCKET_URL =
-  import.meta.env.VITE_WS_URL ?? "ws://localhost/ws";
+const WEBSOCKET_URL = import.meta.env.VITE_WS_URL ?? "ws://localhost/ws";
 
-// Реальная структура сообщения с БФФ:
-// { sourceIp, testType, timestamp, data: { phase, dutOutputVoltage, dutErrorFlag, dutHeartbeat } }
 interface WsMessage {
   sourceIp: string;
   testType: string;
@@ -54,7 +51,7 @@ export const useStomp = (sourceIp: string) => {
               dispatch(addLog(`Ошибка парсинга сообщения: ${message.body}`));
             }
           },
-          { sourceIp }
+          { sourceIp },
         );
       },
 
@@ -65,7 +62,9 @@ export const useStomp = (sourceIp: string) => {
 
       onStompError: (frame) => {
         dispatch(
-          addLog(`STOMP Error: ${frame.headers["message"] ?? "неизвестная ошибка"}`)
+          addLog(
+            `STOMP Error: ${frame.headers["message"] ?? "неизвестная ошибка"}`,
+          ),
         );
       },
     });
